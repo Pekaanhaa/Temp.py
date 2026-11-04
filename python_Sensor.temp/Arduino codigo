@@ -1,0 +1,40 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+const int PINO_LM35 = A0;
+const int AMOSTRAS = 10;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // troque para 0x3F se necessario
+
+void setup() {
+  Serial.begin(9600);
+  analogReference(INTERNAL);  // referencia de 1.1V (Uno/Nano). No Mega use INTERNAL1V1
+
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+
+  delay(100);
+  analogRead(PINO_LM35);      // descarta a primeira leitura
+}
+
+void loop() {
+  long soma = 0;
+  for (int i = 0; i < AMOSTRAS; i++) {
+    soma += analogRead(PINO_LM35);
+    delay(5);
+  }
+  float valor = soma / (float)AMOSTRAS;
+  float temperatura = valor * 1.1 / 1023.0 * 100.0;  // 10 mV por grau C
+
+  // Serial para o Python
+  Serial.println(temperatura, 2);
+
+  // LCD: apenas a temperatura
+  lcd.setCursor(4, 0);
+  lcd.print(temperatura, 1);
+  lcd.print((char)223);       // simbolo de grau
+  lcd.print("C  ");           // espacos limpam sobras da leitura anterior
+
+  delay(1000 - (AMOSTRAS * 5));
+}
