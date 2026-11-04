@@ -1,0 +1,19 @@
+CREATE DATABASE IF NOT EXISTS sensores;
+USE sensores;
+ 
+CREATE TABLE temperatura_raw (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data_hora DATETIME NOT NULL,
+    temperatura FLOAT NOT NULL
+);
+ 
+CREATE TABLE temperatura_media (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data_hora DATETIME NOT NULL,
+    media FLOAT NOT NULL,
+    minima FLOAT NOT NULL,
+    maxima FLOAT NOT NULL,
+    amostras INT NOT NULL
+);
+
+SELECT * FROM sensores.temperatura_raw ORDER by id desc limit 50;
